@@ -10,5 +10,5 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:text="Estudar Android"
-        android:textSize="14sp" />
+        android:textSize="24sp" />
 </LinearLayout>

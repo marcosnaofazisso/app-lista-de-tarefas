@@ -24,7 +24,9 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -37,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private List<Tarefa> listaTarefas = new ArrayList<>();
     private Tarefa tarefaSelecionada;
 
+    private TextView textInit;
+    private Button buttonDeletarTodos;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +53,12 @@ public class MainActivity extends AppCompatActivity {
         //Usar o helper do Banco de Dados
         DbHelper db = new DbHelper(getApplicationContext());
 
-        ContentValues cv = new ContentValues();
-        cv.put("nome", "Teste");
+//        ContentValues cv = new ContentValues();
+//        cv.put("nome", "Teste");
+//        db.getWritableDatabase().insert("tarefas", null, cv);
 
-        db.getWritableDatabase().insert("tarefas", null, cv);
+        textInit = findViewById(R.id.textInit);
+        buttonDeletarTodos = findViewById(R.id.buttonDeletarTodos);
 
         //Adicionar evento de clique
         recyclerView.addOnItemTouchListener(
@@ -73,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onLongItemClick(View view, int position) {
+                            public void onLongItemClick(View view, final int position) {
 
                                 //Recuperar a tarefa que usuário quer deletar
                                 tarefaSelecionada = listaTarefas.get(position);
@@ -116,9 +123,33 @@ public class MainActivity extends AppCompatActivity {
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                             }
+
                         }
                 )
         );
+
+        buttonDeletarTodos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TarefaDAO tarefaDAO = new TarefaDAO(getApplicationContext());
+
+                if (listaTarefas.size() < 1) {
+                    Toast.makeText(getApplicationContext(), "Não há tarefas cadastradas", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    if (tarefaDAO.deletarTodos(listaTarefas)) {
+                        carregarListaTarefas();
+                        Toast.makeText(getApplicationContext(), "Tarefas apagadas com sucesso!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Erro!", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                }
+
+
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -175,6 +206,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayout.VERTICAL));
         recyclerView.setAdapter(tarefaAdapter);
 
+        if (listaTarefas.size() < 1) {
+            textInit.setText("Lista de tarefas vazia...");
+        } else {
+            textInit.setText("");
+
+        }
+
 
     }
 
@@ -182,5 +220,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         carregarListaTarefas();
+
+
     }
 }

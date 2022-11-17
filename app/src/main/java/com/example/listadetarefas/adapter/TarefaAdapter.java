@@ -33,7 +33,7 @@ public class TarefaAdapter extends RecyclerView.Adapter<TarefaAdapter.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         Tarefa tarefa = listaTarefas.get(position);
-        holder.tarefa.setText(tarefa.getNomeTarefa());
+        holder.tarefa.setText((position + 1) + " - " + tarefa.getNomeTarefa());
 
     }
 

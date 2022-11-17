@@ -21,9 +21,19 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+        String sqlInit = "DROP TABLE " + TABELA_TAREFAS + " ;";
+
         String sql = "CREATE TABLE IF NOT EXISTS "
                 + TABELA_TAREFAS +
                 " (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL);";
+//
+//        try {
+//            db.execSQL(sqlInit);
+//
+//        } catch (Exception erro) {
+//            Log.i("INFO DB", "Erro ao limpar a tabela: " + erro.getMessage());
+//
+//        }
 
         try {
             db.execSQL(sql);

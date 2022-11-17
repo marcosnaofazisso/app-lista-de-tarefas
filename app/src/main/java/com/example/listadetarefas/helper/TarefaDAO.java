@@ -95,4 +95,19 @@ public class TarefaDAO implements ITarefaDAO {
         //Retornamos a Lista
         return tarefas;
     }
+
+    @Override
+    public boolean deletarTodos(List<Tarefa> listaTarefas) {
+        for (Tarefa tarefa : listaTarefas) {
+            try {
+                String[] args = {tarefa.getId().toString()};
+                escreve.delete(DbHelper.TABELA_TAREFAS, "id=?", args);
+            } catch (Exception e) {
+                Log.i("INFO", "Erro ao deletar tarefa: " + tarefa.getNomeTarefa() + "ERRO:" + e.getMessage());
+                return false;
+            }
+        }
+        Log.i("INFO", "Sucesso ao deletar todas as tarefas!");
+        return true;
+    }
 }
